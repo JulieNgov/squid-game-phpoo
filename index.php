@@ -9,6 +9,11 @@ abstract class Utils {
     public static function generateRandomNumber($min, $max) {
         return rand($min,$max);
     }
+
+    public static function reset($game) {
+        $game = new Game();
+        $game->startGame();
+    }
 }
 
 $game = new Game();

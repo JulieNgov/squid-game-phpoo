@@ -1,13 +1,14 @@
 <?php
 
 class Game {
-    //Attributs qui seront les héros et les ennemis
+    //Attributs qui seront les héros et les ennemis (seront des tableaux)
     private $heroes;
     private $enemies;
 
     // On crée les instances des héros grâce au constructor que l'on a créé dans notre classe Character
     private function AllHeroes() {
         //on rappelle : $nom, $nbrbilles, $billesGagnés, $billesPerdues
+        //On les rentre dans l'array heroes
         $this->heroes[] = new Hero('Seong Gi-hun', 15, 2, 1);
         $this->heroes[] = new Hero('Kang Sae-byeok', 25, 1, 2);
         $this->heroes[] = new Hero('Cho Sang-woo', 35, 0, 3);
@@ -23,6 +24,7 @@ class Game {
             $age = Utils::generateRandomNumber(20, 90);
 
             //A chaque boucle, on crée un nouvel ennemi avec les variables écrits plus haut
+            //On les rentre dans l'array enemies
             $this->enemies[] = new Enemy($nom, $nbrbilles, $age);
         }
     }
@@ -33,20 +35,21 @@ class Game {
         $this->AllEnemies();
     }
 
-    // On choisit un hero random entre 0 et 2
-    //On commence par 0 car hero et enemies seront des arrays
+    //On choisit un hero random entre 0 et 2
+    //On commence par 0 car hero et enemies sont des arrays
     private function RandomHero() {
         return $this->heroes[Utils::generateRandomNumber(0, 2)];
     }
 
-    // On choisit un ennemi random entre 0 et 19
+    //Au début du jeu, on choisit un ennemi random entre 0 et 19
     private function RandomEnemy() {
         //Count pour avoir le nombre total d'ennemis dans l'array enemies, puis -1 car on commence par 0
-        //On utilise count(length de l'array) du tableau enemies, car plus tard on devra enlever les ennemis battus du tableau au lieu de mettre (0, 19)
+        //On utilise count pour avoir la length de l'array enemies, car plus tard on devra enlever les ennemis battus du tableau au lieu de mettre (0, 19)
+        //puis -1 car un array commence par 0
         return $this->enemies[Utils::generateRandomNumber(0, count($this->enemies) - 1)];
     }
 
-    // On retourne le nombre max de rounds, avec $difficulté qui sera choisit lorsque le jeu commence
+    // On retourne le nombre max de rounds, avec $difficulté qui sera choisi lorsque le jeu commence
     private function MaxRounds($difficulté) {
         switch ($difficulté) {
             case 1:
@@ -64,9 +67,9 @@ class Game {
     public function startGame() {
         echo "Le jeu des billes commence!!!" . "<br>";
 
-        // On choisit au hasard un héro et une difficulté
-        //Grâce à la fonction RandomHero
-        //Choisit au hasard si on est loyal ou pas
+        //On choisit au hasard un héro et une difficulté grâce à la fonction RandomHero
+        //On choisit au hasard la difficulté (entre 1 et 3)
+        //On choisit au hasard si on est loyal ou pas (1 ou 2)
         $hero = $this->RandomHero();
         $difficulté = Utils::generateRandomNumber(1, 3);
         $loyal = Utils::generateRandomNumber(1, 2);
@@ -88,6 +91,7 @@ class Game {
         //Alors le round (while) continue
         while ($hero->getNbrBilles() > 0 && $round <= $this->MaxRounds($difficulté)) {
             echo "Round " . $round . "<br>";
+            //Incrémente
             $round++;
 
             // On choisit un random ennemi à affronter
@@ -110,14 +114,14 @@ class Game {
                     break;
                 }
             }
-            // Result aura comme résultat soit true, soit false
+            //$Result aura comme résultat soit true, soit false car LeRound est un boolean
             //On demande au héro de jouer en appelant la fonction LeRound
             $result = $hero->LeRound($EnnemieBilles);
 
             //On update le round, donc si le $result est true,
             if ($result) {
-                //On enlève l'enemi de son array
-                //array search car on a que le nom de l'ennemi, donc on va chercher son nom dans l'array enemies
+                //On enlève l'ennemi de son array enemies
+                //array search car on a que le nom de l'ennemi, donc on va chercher son nom dans l'array enemies pour avoir son emplacement dans l'array
                 //array_splice pour enlever du tableau, et que les éléments soient remplacés (efficace pour avoir la nouvelle length à chaque round)
                 array_splice($this->enemies, array_search($enemy, $this->enemies), 1);
             }

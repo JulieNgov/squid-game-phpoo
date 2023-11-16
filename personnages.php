@@ -3,8 +3,8 @@
 //Abstract avant class car on utilise des fonctions abstracts dans la classe
 abstract class Character {
 
-    //Attributs qui représentera nos personnages
-    //protected pour qu'il ne soit pas accessible dans les classes en dehors de la classe Character et ses héritages (Hero et Enemy)
+    //Attributs qui représenteront nos personnages
+    //protected pour qu'il ne soit pas accessible dans les classes en dehors de la classe Character,Hero et Enemy (héritage)
     protected $nom;
     protected $nbrbilles;
     protected $bonus;
@@ -18,7 +18,8 @@ abstract class Character {
         $this->malus = $malus;
     }
 
-    //getter
+    //getter pour accéder aux données à l'extérieur de la classe, car nos attributs sont en private
+    
     public function getNom() {
         return $this->nom;
     }
@@ -40,19 +41,20 @@ abstract class Character {
 class Hero extends Character {
     public function LeRound($EnnemieBilles) {
         //Dans une variable, on met le résultat de la fonction PairouImpair
-        //pour pour l'utiliser dans le if.
+        //pour pouvoir l'utiliser dans le if plus tard
         //Donc ResultatRound sera égal au chiffre 0 ou 1
         $ResultatRound = $this->PairOuImpair();
 
-        //Si ResultatRound = 0, alors 0%2 = 0 donc c'est pair, et si c'est égal à 1, 1%2 = 1 donc impair
+        //Si ResultatRound = 0, alors le nombre de billes de l'ennemi%2 = 0 donc c'est pair, et si c'est égal à 1, nbr de billes%2 = 1 donc impair
         //On va retourner true si on gagne, et false si on perd.
         if ($ResultatRound === $EnnemieBilles % 2) {
-            //On ajoute les billes gagnés au personnage
+            //On ajoute les billes gagnés au personnage (les billes de l'ennemi + le bonus)
             $this->nbrbilles += ($this->bonus +  $EnnemieBilles);
             echo "Gagné, tu as reçu " . ($this->bonus +  $EnnemieBilles) . " billes." . "<br>" . "<br>";
             return true;
         } else {
             //On enlève les billes perdues au personnage
+            //Les billes de l'ennemi + le malus
             $this->nbrbilles -= ($this->malus +  $EnnemieBilles);
             echo "Perdu, tu as perdu " . ($this->malus +  $EnnemieBilles) . " billes." . "<br>" . "<br>";
             return false;
@@ -60,7 +62,7 @@ class Hero extends Character {
     }
 
     //BONUS: Fonction triche en public car utilisée en dehors de la classe
-    //Fonction utilisée lorsque le héro a triché
+    //Fonction utilisée si le héro a triché
     public function Triche($EnnemieBilles) {
         //On ajoute uniquement les billes de l'ennemi, pas de bonus
         $this->nbrbilles += ($EnnemieBilles);
@@ -70,6 +72,7 @@ class Hero extends Character {
     }
 
     //Va renvoyer un chiffre entre 0 et 1
+    //Utils:: (car la fonction est static)
     protected function PairOuImpair() {
         return Utils::generateRandomNumber(0, 1);
     }
@@ -82,7 +85,7 @@ class Enemy extends Character {
 
     //Constructor pour initialiser les propriétés de l'ennemi
     public function __construct($nom, $nbrbilles, $age) {
-        //On appelle le constructor de Character (son parent) car différent de Hero
+        //On appelle le constructor de Character (son parent) car différent de Hero (surcharge)
         //L'ennemi n'a pas de bonus ou malus, donc on les met tous les 2 à zero
         parent::__construct($nom, $nbrbilles, 0, 0);
         $this->age = $age;
